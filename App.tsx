@@ -22,6 +22,7 @@ import {
   useDatabaseContext,
 } from './store/databaseContext';
 import IconButton from './ui/atoms/IconButton';
+import { DraftContextProvider } from './store/draftsContext';
 
 export function Appw() {
   const [drafts, setDrafts] = useState<DraftType[]>([]);
@@ -158,7 +159,9 @@ function DraftsOverview() {
 export default function Root() {
   return (
     <DatabaseContextProvider>
-      <App />
+      <DraftContextProvider>
+        <App />
+      </DraftContextProvider>
     </DatabaseContextProvider>
   );
 }

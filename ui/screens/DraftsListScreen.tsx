@@ -6,19 +6,23 @@ import { DraftType } from '../../lib/types/types';
 import AppLoading from 'expo-app-loading';
 import DraftList from '../components/DraftList';
 import { GlobalStyles } from '../../constants/styles';
+import { useDraftContext } from '../../store/draftsContext';
 
 const DraftsListScreen = () => {
-  const [drafts, setDrafts] = useState<DraftType[]>([]);
-
+  // const [drafts, setDrafts] = useState<DraftType[]>([]);
+  const { drafts, updateDrafts, updateInitDrafts } = useDraftContext();
   const { isInitialised } = useDatabaseContext();
 
   useEffect(() => {
     if (isInitialised) {
       fetchDrafts()
         .then((drafts) => {
-          setDrafts(drafts);
+          // setDrafts(drafts);
+          updateInitDrafts(drafts);
           console.log('ffffffffffffffffffffffffffffffffffffffffffffffff');
-          console.log('Drafts fetched successfully inside APP');
+          console.log(
+            'In DraftList - 21 - Drafts fetched successfully inside APP'
+          );
           console.log(drafts);
           console.log('ffffffffffffffffffffffffffffffffffffffffffffffff');
         })
@@ -50,20 +54,9 @@ const DraftsListScreen = () => {
     );
   }
 
-  const deleteDraftHandler = async (draftId: string) => {
-    console.log('Delete Draft::draftId', draftId); // need to remove from sqlite db
-    await deleteDraft(draftId);
+  // console.log('DraftsListScreen', drafts);
 
-    setDrafts((currentDrafts) => {
-      return currentDrafts.filter((draft) => draft.id !== draftId);
-    });
-  };
-
-  console.log('DraftsListScreen', drafts);
-
-  return (
-    <DraftList draftListProp={drafts} onDeleteDraftProp={deleteDraftHandler} />
-  );
+  return <DraftList draftListProp={drafts} />;
 };
 
 export default DraftsListScreen;

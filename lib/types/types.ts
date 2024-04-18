@@ -23,7 +23,7 @@ export type DraftListType = {
 
 export interface DraftListPropsInterface {
   draftListProp: DraftType[];
-  onDeleteDraftProp: (id: string) => void;
+  onDeleteDraftProp?: (id: string) => void;
 }
 
 export interface PublishedListPropsInterface {
@@ -66,3 +66,9 @@ export type DraftScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'DraftScreen'
 >;
+
+export type DraftContextType = {
+  drafts: DraftType[];
+  updateDrafts: (draft: DraftType) => void;
+  updateInitDrafts: (drafts: DraftType[]) => void;
+};

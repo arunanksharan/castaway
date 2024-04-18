@@ -1,5 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 import uuid from 'react-native-uuid';
+import { DraftType } from '../types/types';
 
 const database = SQLite.openDatabase('drafts.db');
 
@@ -38,7 +39,7 @@ export function fetchDrafts() {
         [],
         (_, result) => {
           console.log('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
-          console.log('Result fetched successfully');
+          console.log('In utils - fetchdrafts - Result fetched successfully');
           console.log(result.rows);
           console.log('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
           const drafts: { id: string; content: string; created_at: string }[] =
@@ -47,7 +48,7 @@ export function fetchDrafts() {
             drafts.push(result.rows.item(i));
           }
           console.log('ffffffffffffffffffffffffffffffffffffffffffffffff');
-          console.log('Drafts fetched successfully');
+          console.log('Utils database 51 - Drafts fetched successfully');
           console.log(drafts);
           console.log('ffffffffffffffffffffffffffffffffffffffffffffffff');
           resolve(drafts);
@@ -62,8 +63,9 @@ export function fetchDrafts() {
   });
   return promise;
 }
-export function insertDraft(content: string) {
+export function insertDraft(draft: DraftType) {
   const promise = new Promise<SQLite.SQLResultSet>((resolve, reject) => {
+    const content = draft.content;
     const id = `${uuid.v4()}`;
     const created_at = new Date().toISOString(); // ISO string format includes timezone information.
 
@@ -78,8 +80,56 @@ export function insertDraft(content: string) {
         `INSERT INTO drafts (id, content, created_at) VALUES (?, ?, ?)`,
         [id, content, created_at],
         (_, result) => {
-          console.log('Draft inserted successfully');
-          console.log(result);
+          // console.log('Draft inserted successfully');
+          // console.log(result);
+          // resolve(result);
+          console.log('Draft inserted successfully, ID:', result.insertId);
+          // Now fetch the newly inserted row
+          tx.executeSql(
+            `SELECT * FROM drafts WHERE id = ?;`,
+            [id],
+            (_, selectResult) => {
+              console.log(
+                'Retrieved inserted draft:',
+                selectResult.rows.item(0)
+              );
+              resolve(selectResult);
+            },
+            (_, selectError) => {
+              console.error('Error retrieving inserted draft:', selectError);
+              return false; // Continue transaction despite error
+            }
+          );
+        },
+        (_, error) => {
+          console.error(error);
+          reject(error);
+          return true; // Fix: Rollback transaction
+        }
+      );
+    });
+  });
+  return promise;
+}
+
+export function updateDraft(draft: DraftType) {
+  const promise = new Promise<SQLite.SQLResultSet>((resolve, reject) => {
+    const content = draft.content;
+    const id = draft.id;
+    const created_at = new Date().toISOString(); // ISO string format includes timezone information.
+
+    console.log('Updating draft: {id, content, created_at}:', {
+      id,
+      content,
+      created_at,
+    });
+
+    database.transaction((tx) => {
+      tx.executeSql(
+        `UPDATE drafts SET content = ?, created_at = ? WHERE id = ?`,
+        [content, created_at, id],
+        (_, result) => {
+          console.log('Draft updated successfully');
           resolve(result);
         },
         (_, error) => {

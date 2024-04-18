@@ -11,10 +11,7 @@ import { DraftListPropsInterface } from '../../lib/types/types';
 import { GlobalStyles } from '../../constants/styles';
 import DraftItem from './DraftItem';
 
-const DraftList = ({
-  draftListProp,
-  onDeleteDraftProp,
-}: DraftListPropsInterface) => {
+const DraftList = ({ draftListProp }: DraftListPropsInterface) => {
   return (
     <View style={styles.draftListContainer}>
       <FlatList

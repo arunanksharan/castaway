@@ -1,17 +1,30 @@
 import React, { useLayoutEffect } from 'react';
 import Draft from '../components/Draft';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { DraftScreenProps } from '../../lib/types/types';
+import { DraftScreenProps, DraftType } from '../../lib/types/types';
 import { GlobalStyles } from '../../constants/styles';
 import Button from '../atoms/Button';
 import IconButton from '../atoms/IconButton';
+import { insertDraft, updateDraft } from '../../lib/utils/database';
+import { useDraftContext } from '../../store/draftsContext';
 
 const DraftScreen = ({ route, navigation }: DraftScreenProps) => {
   console.log('DraftScreen', route.params);
-  const [draft, setDraft] = React.useState<string>('');
+
+  const { drafts, updateDrafts } = useDraftContext();
+
   const draftId = route.params?.draftId;
   const isEditing = !!draftId;
 
+  const draftInitState = drafts.filter((draft) => draft.id === draftId);
+
+  const [draft, setDraft] = isEditing
+    ? React.useState<DraftType>(draftInitState[0])
+    : React.useState<DraftType>({
+        id: '',
+        content: '',
+        created_at: '',
+      });
   useLayoutEffect(() => {
     navigation.setOptions({
       title: isEditing ? 'Edit Draft' : 'Add Draft',
@@ -30,28 +43,63 @@ const DraftScreen = ({ route, navigation }: DraftScreenProps) => {
   function cancelDraftHandler() {
     navigation.goBack();
   }
-  function confirmHandler() {
+
+  // Same as submitHandler
+  async function confirmHandler() {
+    if (isEditing) {
+      console.log('Update Draft');
+      console.log('Draft::', draft);
+      draft.id = draftId;
+      const response = await updateDraft(draft);
+      console.log(' Update Response::', response);
+      updateDrafts(draft);
+    } else {
+      console.log('Add Draft');
+      // console.log('Draft::', draft);
+      const response = await insertDraft(draft);
+
+      // console.log(' Insert Response::', response.rows._array[0]);
+      draft.id = response.rows._array[0].id;
+      draft.created_at = response.rows._array[0].created_at;
+      console.log('Draft::60::draft screen after select', draft);
+      updateDrafts(draft);
+    }
     navigation.goBack();
+  }
+
+  function draftInputHandler(inputIdentifier: string, inputValue: string) {
+    // console.log('Draft changed');
+    setDraft((prevDraft) => ({
+      ...prevDraft,
+      [inputIdentifier]: inputValue,
+    }));
+    // console.log('InputValue::', inputValue);
   }
 
   return (
     <View style={styles.container}>
+      <View style={{ alignItems: 'center' }}>
+        <Text style={{ color: 'white', fontSize: 18, marginVertical: 24 }}>
+          Your Draft
+        </Text>
+      </View>
       <View style={styles.draftInputContainer}>
-        <Text style={styles.textInputTitle}>Create Draft</Text>
         <TextInput
           placeholder="Draft"
-          style={styles.textInput}
-          onChangeText={() => {
-            console.log('Draft changed');
-          }}
-          value={draft}
+          style={[styles.textInput, styles.textInputMultiline]}
+          onChangeText={draftInputHandler.bind(this, 'content')}
+          value={draft.content}
+          multiline={true}
+          autoCorrect={false}
+          // caretHidden={false}
+          selectionColor="red"
         />
       </View>
       <View style={styles.buttonsContainer}>
         <Button mode="outlined" onPress={cancelDraftHandler}>
           Cancel
         </Button>
-        <Button mode="regular" onPress={cancelDraftHandler}>
+        <Button mode="regular" onPress={confirmHandler}>
           {isEditing ? 'Update' : 'Add'}
         </Button>
       </View>
@@ -77,10 +125,24 @@ const styles = StyleSheet.create({
     padding: 24,
     backgroundColor: GlobalStyles.colors.primary700,
   },
+  draftInputContainer: {
+    // backgroundColor: '#aaa',
+    // width: '80%',
+
+    flex: 2,
+    backgroundColor: 'red',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#000',
+    paddingBottom: 10,
+  },
   buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
+    flex: 1,
+    backgroundColor: 'blue',
   },
   deleteContainer: {
     marginTop: 24,
@@ -89,16 +151,7 @@ const styles = StyleSheet.create({
     borderTopColor: GlobalStyles.colors.primary200,
     alignItems: 'center',
   },
-  draftInputContainer: {
-    // backgroundColor: '#aaa',
-    width: '80%',
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    borderBottomWidth: 1,
-    borderBottomColor: '#000',
-    paddingBottom: 10,
-  },
+
   textInputTitle: {
     // marginTop: 10,
     fontSize: 18,
@@ -109,36 +162,24 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#bbb',
     // padding: 16,
-    paddingHorizontal: 16,
-    marginTop: 5,
-    backgroundColor: '#fff',
-    borderRadius: 5,
+    paddingHorizontal: 6,
+    paddingVertical: 6,
+
+    // marginTop: 5,
+    backgroundColor: GlobalStyles.colors.primary100,
+    color: GlobalStyles.colors.primary800,
+    borderRadius: 6,
     width: '100%',
-    height: '50%',
+    height: '90%',
+  },
+  textInputMultiline: {
+    minHeight: 100,
+    textAlignVertical: 'top',
   },
   draftBtnsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     width: '60%',
     marginTop: 10,
-  },
-
-  saveDraftBtn: {
-    backgroundColor: '#12de45',
-    padding: 5,
-    paddingHorizontal: 10,
-    marginTop: 10,
-    marginHorizontal: 10,
-    borderRadius: 5,
-    flex: 1,
-  },
-  clearDraftBtn: {
-    backgroundColor: '#12de45',
-    padding: 5,
-    paddingHorizontal: 10,
-    marginTop: 10,
-    marginHorizontal: 10,
-    borderRadius: 5,
-    flex: 1,
   },
 });
