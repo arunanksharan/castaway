@@ -38,19 +38,23 @@ export function fetchDrafts() {
         `SELECT * FROM drafts`,
         [],
         (_, result) => {
-          console.log('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
-          console.log('In utils - fetchdrafts - Result fetched successfully');
-          console.log(result.rows);
-          console.log('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+          // console.log('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+          // console.log('In utils - fetchdrafts - Result fetched successfully');
+          // console.log(result.rows);
+          // console.log('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
           const drafts: { id: string; content: string; created_at: string }[] =
             [];
           for (let i = 0; i < result.rows.length; i++) {
             drafts.push(result.rows.item(i));
           }
-          console.log('ffffffffffffffffffffffffffffffffffffffffffffffff');
+          console.log(
+            'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+          );
           console.log('Utils database 51 - Drafts fetched successfully');
           console.log(drafts);
-          console.log('ffffffffffffffffffffffffffffffffffffffffffffffff');
+          console.log(
+            'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+          );
           resolve(drafts);
         },
         (_, error) => {
@@ -83,7 +87,7 @@ export function insertDraft(draft: DraftType) {
           // console.log('Draft inserted successfully');
           // console.log(result);
           // resolve(result);
-          console.log('Draft inserted successfully, ID:', result.insertId);
+          // console.log('Draft inserted successfully, ID:', result.insertId);
           // Now fetch the newly inserted row
           tx.executeSql(
             `SELECT * FROM drafts WHERE id = ?;`,
@@ -96,7 +100,7 @@ export function insertDraft(draft: DraftType) {
               resolve(selectResult);
             },
             (_, selectError) => {
-              console.error('Error retrieving inserted draft:', selectError);
+              // console.error('Error retrieving inserted draft:', selectError);
               return false; // Continue transaction despite error
             }
           );
@@ -129,7 +133,7 @@ export function updateDraft(draft: DraftType) {
         `UPDATE drafts SET content = ?, created_at = ? WHERE id = ?`,
         [content, created_at, id],
         (_, result) => {
-          console.log('Draft updated successfully');
+          // console.log('Draft updated successfully');
           resolve(result);
         },
         (_, error) => {

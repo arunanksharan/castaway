@@ -19,12 +19,12 @@ const DraftsListScreen = () => {
         .then((drafts) => {
           // setDrafts(drafts);
           updateInitDrafts(drafts);
-          console.log('ffffffffffffffffffffffffffffffffffffffffffffffff');
+          console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
           console.log(
             'In DraftList - 21 - Drafts fetched successfully inside APP'
           );
-          console.log(drafts);
-          console.log('ffffffffffffffffffffffffffffffffffffffffffffffff');
+          // console.log(drafts);
+          console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
         })
         .catch((error) => {
           console.error(error);

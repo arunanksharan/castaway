@@ -4,7 +4,7 @@ import DraftScreen from './ui/screens/DraftScreen';
 import DraftList from './ui/components/DraftList';
 import { useEffect, useState } from 'react';
 import React from 'react';
-import Draft from './ui/components/Draft';
+// import Draft from './ui/components/Draft';
 import { DraftType, RootStackParamList } from './lib/types/types';
 import { fetchDrafts, init, insertDraft } from './lib/utils/database';
 import AppLoading from 'expo-app-loading';
@@ -21,86 +21,8 @@ import {
   DatabaseContextProvider,
   useDatabaseContext,
 } from './store/databaseContext';
-import IconButton from './ui/atoms/IconButton';
+import IconButton from './ui/atoms/IconsButton';
 import { DraftContextProvider } from './store/draftsContext';
-
-export function Appw() {
-  const [drafts, setDrafts] = useState<DraftType[]>([]);
-  const [dbInitialized, setDbInitialized] = useState<boolean>(false);
-
-  useEffect(() => {
-    init()
-      .then(() => {
-        setDbInitialized(true);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (dbInitialized) {
-      fetchDrafts()
-        .then((drafts) => {
-          setDrafts(drafts);
-          console.log('ffffffffffffffffffffffffffffffffffffffffffffffff');
-          console.log('Drafts fetched successfully inside APP');
-          console.log(drafts);
-          console.log('ffffffffffffffffffffffffffffffffffffffffffffffff');
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  }, [dbInitialized]);
-
-  if (!dbInitialized) {
-    return <AppLoading />;
-  }
-
-  const saveDraftHandler = async (draft: DraftType) => {
-    console.log('Save Draft');
-    setDrafts((currentDrafts) => [...currentDrafts, draft]);
-    await insertDraft(draft.content);
-  };
-
-  const deleteDraftHandler = (draftId: string) => {
-    console.log('Delete Draft');
-    setDrafts((currentDrafts) => {
-      return currentDrafts.filter((draft) => draft.id !== draftId);
-    });
-  };
-
-  return (
-    <View style={styles.appContainer}>
-      <Text style={styles.appTitleText}>Birdcast</Text>
-
-      <Draft saveDraftHandlerProp={saveDraftHandler} />
-      <DraftList
-        draftListProp={drafts}
-        onDeleteDraftProp={deleteDraftHandler}
-      />
-      <StatusBar style="auto" />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  appContainer: {
-    flex: 1,
-    backgroundColor: '#e1e8ed',
-    alignItems: 'center',
-    // justifyContent: 'center',
-  },
-  appTitleText: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    marginTop: 60,
-    marginBottom: 16,
-    color: '#55acee',
-    backgroundColor: '#fff',
-  },
-});
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const BottomTabs = createBottomTabNavigator();
@@ -122,7 +44,7 @@ function DraftsOverview() {
               size={24}
               color="white"
               onPress={() => {
-                console.log('Pressed add');
+                // console.log('Pressed add');
                 navigation.navigate('DraftScreen');
               }}
             />
@@ -171,10 +93,10 @@ export function App() {
   useEffect(() => {
     init()
       .then(() => {
-        console.log('Database initialised & calling from inside App');
-        console.log('isInitialised', isInitialised);
+        // console.log('Database initialised & calling from inside App');
+        // console.log('isInitialised', isInitialised);
         updateInitialisedState();
-        console.log('isInitialised after', isInitialised);
+        // console.log('isInitialised after', isInitialised);
       })
       .catch((error) => {
         console.error(error);

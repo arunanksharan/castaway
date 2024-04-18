@@ -1,15 +1,14 @@
 import React, { useLayoutEffect } from 'react';
-import Draft from '../components/Draft';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { DraftScreenProps, DraftType } from '../../lib/types/types';
 import { GlobalStyles } from '../../constants/styles';
 import Button from '../atoms/Button';
-import IconButton from '../atoms/IconButton';
+import IconButton from '../atoms/IconsButton';
 import { insertDraft, updateDraft } from '../../lib/utils/database';
 import { useDraftContext } from '../../store/draftsContext';
 
 const DraftScreen = ({ route, navigation }: DraftScreenProps) => {
-  console.log('DraftScreen', route.params);
+  // console.log('DraftScreen', route.params);
 
   const { drafts, updateDrafts } = useDraftContext();
 
@@ -36,7 +35,7 @@ const DraftScreen = ({ route, navigation }: DraftScreenProps) => {
   // if draftId exists = edit mode | else add mode
 
   function deleteDraftHandler() {
-    console.log('Delete Draft');
+    // console.log('Delete Draft');
     navigation.goBack();
   }
 
@@ -47,21 +46,25 @@ const DraftScreen = ({ route, navigation }: DraftScreenProps) => {
   // Same as submitHandler
   async function confirmHandler() {
     if (isEditing) {
-      console.log('Update Draft');
-      console.log('Draft::', draft);
+      console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm');
+      console.log('50: DraftScreen: Update Draft');
+      console.log(draft);
+      console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm');
       draft.id = draftId;
       const response = await updateDraft(draft);
-      console.log(' Update Response::', response);
+      // console.log(' DRAFT SCREEN 53:: Update Response::', response);
+      console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm');
+      console.log('57: DraftScreen: Update response after select', response);
+      console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm');
       updateDrafts(draft);
     } else {
-      console.log('Add Draft');
-      // console.log('Draft::', draft);
+      console.log('oooooooooooooooooooooooooooooooooooooooooooooooooooooo');
       const response = await insertDraft(draft);
-
       // console.log(' Insert Response::', response.rows._array[0]);
       draft.id = response.rows._array[0].id;
       draft.created_at = response.rows._array[0].created_at;
-      console.log('Draft::60::draft screen after select', draft);
+      console.log('60: DraftScreen: Add Draft after select', draft);
+      console.log('oooooooooooooooooooooooooooooooooooooooooooooooooooooo');
       updateDrafts(draft);
     }
     navigation.goBack();
@@ -130,7 +133,7 @@ const styles = StyleSheet.create({
     // width: '80%',
 
     flex: 2,
-    backgroundColor: 'red',
+    // backgroundColor: 'red',
     alignItems: 'center',
     justifyContent: 'flex-start',
     // borderBottomWidth: 1,
@@ -142,7 +145,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     flex: 1,
-    backgroundColor: 'blue',
+    // backgroundColor: 'blue',
   },
   deleteContainer: {
     marginTop: 24,
