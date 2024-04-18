@@ -1,11 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import DraftScreen from './ui/screens/Draft';
+import DraftScreen from './ui/screens/DraftScreen';
 import DraftList from './ui/components/DraftList';
 import { useEffect, useState } from 'react';
 import React from 'react';
 import Draft from './ui/components/Draft';
-import { DraftType } from './lib/types/types';
+import { DraftType, RootStackParamList } from './lib/types/types';
 import { fetchDrafts, init, insertDraft } from './lib/utils/database';
 import AppLoading from 'expo-app-loading';
 import { NavigationContainer } from '@react-navigation/native';
@@ -21,7 +21,7 @@ import {
   DatabaseContextProvider,
   useDatabaseContext,
 } from './store/databaseContext';
-import { IconButton } from './ui/atoms/button';
+import IconButton from './ui/atoms/IconButton';
 
 export function Appw() {
   const [drafts, setDrafts] = useState<DraftType[]>([]);
@@ -101,20 +101,20 @@ const styles = StyleSheet.create({
   },
 });
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 const BottomTabs = createBottomTabNavigator();
 
 function DraftsOverview() {
   return (
     <BottomTabs.Navigator
-      screenOptions={{
+      screenOptions={({ navigation }) => ({
         headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
         headerTintColor: '#fff',
         tabBarStyle: {
           backgroundColor: GlobalStyles.colors.primary500,
         },
         tabBarActiveTintColor: GlobalStyles.colors.accent500,
-        headerRight: () => {
+        headerRight: ({ tintColor }) => {
           return (
             <IconButton
               name="plus"
@@ -122,11 +122,12 @@ function DraftsOverview() {
               color="white"
               onPress={() => {
                 console.log('Pressed add');
+                navigation.navigate('DraftScreen');
               }}
             />
           );
         },
-      }}
+      })}
     >
       <BottomTabs.Screen
         name="DraftsListScreen"
@@ -181,15 +182,24 @@ export function App() {
   }
   return (
     <>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+            headerTintColor: '#fff',
+          }}
+        >
           <Stack.Screen
             name="DraftsOverview"
             component={DraftsOverview}
             options={{ headerShown: false }}
           />
-          <Stack.Screen name="DraftScreen" component={DraftScreen} />
+          <Stack.Screen
+            name="DraftScreen"
+            component={DraftScreen}
+            options={{ presentation: 'modal' }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </>

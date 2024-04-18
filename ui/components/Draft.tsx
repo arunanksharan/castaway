@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native';
 import { DraftPropsInterface } from '../../lib/types/types';
 import uuid from 'react-native-uuid';
 
-const Draft = ({ saveDraftHandlerProp }: DraftPropsInterface) => {
+const Draft1 = ({ saveDraftHandlerProp }: DraftPropsInterface) => {
   // list of drafts
   const [draft, setDraft] = React.useState<string>(''); // current draft
 
@@ -44,6 +44,10 @@ const Draft = ({ saveDraftHandlerProp }: DraftPropsInterface) => {
       </View>
     </View>
   );
+};
+
+const Draft = () => {
+  return <View></View>;
 };
 
 const styles = StyleSheet.create({

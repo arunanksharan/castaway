@@ -1,14 +1,25 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { GlobalStyles } from '../../constants/styles';
-import { DraftItemPropsInterface, DraftType } from '../../lib/types/types';
+import {
+  DraftItemPropsInterface,
+  DraftNavigationProp,
+  DraftType,
+} from '../../lib/types/types';
 import { getFormattedDate } from '../../lib/utils/date';
+import { useNavigation } from '@react-navigation/native';
 
 const DraftItem = ({ draftItem }: DraftItemPropsInterface) => {
+  const navigation = useNavigation<DraftNavigationProp>();
+  function editDraftItemHandler() {
+    console.log('Edit Draft Item');
+    navigation.navigate('DraftScreen', { draftId: draftItem.id }); // Update the code to pass an empty object as the second argument
+  }
   return (
     <Pressable
       android_ripple={{ color: '#210644' }}
       style={({ pressed }) => pressed && styles.pressedItemText}
+      onPress={editDraftItemHandler}
     >
       <View style={styles.draftItemContainer}>
         <Text
