@@ -4,6 +4,7 @@ import { DatabaseContextType } from '../lib/types/types';
 
 const DatabaseContext = createContext<DatabaseContextType>({
   isInitialised: false,
+  updateInitialisedState: () => {},
 });
 
 export const DatabaseContextProvider = ({
@@ -11,8 +12,8 @@ export const DatabaseContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [isInitialised, setIsInitialised] = useState(false);
-  const updateGlobalState = () => {
+  const [isInitialised, setIsInitialised] = useState<boolean>(false);
+  const updateInitialisedState = () => {
     setIsInitialised(true);
     console.log(
       'Line 24 - DatabaseContextProvider - updateDatabaseState',
@@ -21,7 +22,12 @@ export const DatabaseContextProvider = ({
   };
 
   return (
-    <DatabaseContext.Provider value={{ isInitialised: isInitialised }}>
+    <DatabaseContext.Provider
+      value={{
+        isInitialised: isInitialised,
+        updateInitialisedState: updateInitialisedState,
+      }}
+    >
       {children}
     </DatabaseContext.Provider>
   );

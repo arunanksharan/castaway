@@ -3,9 +3,18 @@ export interface DraftPropsInterface {
 }
 
 export type DraftType = {
-  id?: string;
+  id: string;
   content: string;
-  created_at?: string;
+  created_at: string;
+};
+
+export interface DraftItemPropsInterface {
+  draftItem: DraftType;
+}
+
+export type DraftListType = {
+  drafts: DraftType[];
+  deleteDraftHandler: (id: string) => void;
 };
 
 export interface DraftListPropsInterface {
@@ -24,4 +33,5 @@ export type PublishedType = {
 
 export type DatabaseContextType = {
   isInitialised: boolean;
+  updateInitialisedState: () => void;
 };

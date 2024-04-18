@@ -8,6 +8,8 @@ import {
   View,
 } from 'react-native';
 import { DraftListPropsInterface } from '../../lib/types/types';
+import { GlobalStyles } from '../../constants/styles';
+import DraftItem from './DraftItem';
 
 const DraftList = ({
   draftListProp,
@@ -16,38 +18,28 @@ const DraftList = ({
   return (
     <View style={styles.draftListContainer}>
       <FlatList
+        style={{ width: '100%' }}
         data={draftListProp}
         renderItem={(itemData) => {
           const { item } = itemData;
-          return (
-            <Pressable
-              onPress={onDeleteDraftProp.bind(this, item.content)}
-              android_ripple={{ color: '#210644' }}
-              style={({ pressed }) => pressed && styles.pressedItemText}
-            >
-              <Text style={styles.draftItemText}>{` ${item.content}`}</Text>
-            </Pressable>
-          );
+          return <DraftItem draftItem={item} />;
         }}
-        keyExtractor={(item, index) => item.content}
+        keyExtractor={(item, index) => item.id}
       />
-      {/* {draftListProp.map((draft) => ( */}
-      {/* <Text
-          style={styles.draftItemText}
-          key={draft.id}
-        >{`${draft.id}: ${draft.text}`}</Text> */}
-      {/* ))} */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   draftListContainer: {
-    // backgroundColor: '#fff',
+    backgroundColor: GlobalStyles.colors.primary700,
+    padding: 24,
     // marginTop: 10,
-    flex: 3,
-    width: '80%',
-    marginBottom: 50,
+    flex: 1,
+    alignItems: 'center',
+    // width: '80%',
+    // marginBottom: 50,
+    // borderRadius: 6,
   },
   draftItemText: {
     backgroundColor: '#fff',

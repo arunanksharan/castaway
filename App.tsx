@@ -17,6 +17,11 @@ import { GlobalStyles } from './constants/styles';
 import { AntDesign, Entypo, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import PublishedListScreen from './ui/screens/PublishedListScreen';
 import DraftsListScreen from './ui/screens/DraftsListScreen';
+import {
+  DatabaseContextProvider,
+  useDatabaseContext,
+} from './store/databaseContext';
+import { IconButton } from './ui/atoms/button';
 
 export function Appw() {
   const [drafts, setDrafts] = useState<DraftType[]>([]);
@@ -109,6 +114,18 @@ function DraftsOverview() {
           backgroundColor: GlobalStyles.colors.primary500,
         },
         tabBarActiveTintColor: GlobalStyles.colors.accent500,
+        headerRight: () => {
+          return (
+            <IconButton
+              name="plus"
+              size={24}
+              color="white"
+              onPress={() => {
+                console.log('Pressed add');
+              }}
+            />
+          );
+        },
       }}
     >
       <BottomTabs.Screen
@@ -137,7 +154,31 @@ function DraftsOverview() {
   );
 }
 
-export default function App() {
+export default function Root() {
+  return (
+    <DatabaseContextProvider>
+      <App />
+    </DatabaseContextProvider>
+  );
+}
+
+export function App() {
+  const { isInitialised, updateInitialisedState } = useDatabaseContext();
+  useEffect(() => {
+    init()
+      .then(() => {
+        console.log('Database initialised & calling from inside App');
+        console.log('isInitialised', isInitialised);
+        updateInitialisedState();
+        console.log('isInitialised after', isInitialised);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+  if (!isInitialised) {
+    return <AppLoading />;
+  }
   return (
     <>
       <StatusBar style="auto" />

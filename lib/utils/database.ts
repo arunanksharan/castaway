@@ -92,3 +92,24 @@ export function insertDraft(content: string) {
   });
   return promise;
 }
+
+export function deleteDraft(id: string) {
+  const promise = new Promise<SQLite.SQLResultSet>((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        `DELETE FROM drafts WHERE id = ?`,
+        [id],
+        (_, result) => {
+          console.log('Draft deleted successfully');
+          resolve(result);
+        },
+        (_, error) => {
+          console.error(error);
+          reject(error);
+          return true; // Fix: Rollback transaction
+        }
+      );
+    });
+  });
+  return promise;
+}

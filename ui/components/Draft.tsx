@@ -16,6 +16,8 @@ const Draft = ({ saveDraftHandlerProp }: DraftPropsInterface) => {
     console.log('Save Draft');
     saveDraftHandlerProp({
       content: draft,
+      id: '',
+      created_at: '',
     });
     setDraft('');
   };
