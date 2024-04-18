@@ -78,6 +78,11 @@ const DraftScreen = ({ route, navigation }: DraftScreenProps) => {
     }));
     // console.log('InputValue::', inputValue);
   }
+  function publishHandler() {
+    console.log('Publish Draft::', draft);
+    // Call Neynar API to publish the draft
+    navigation.goBack();
+  }
 
   return (
     <View style={styles.container}>
@@ -103,7 +108,10 @@ const DraftScreen = ({ route, navigation }: DraftScreenProps) => {
           Cancel
         </Button>
         <Button mode="regular" onPress={confirmHandler}>
-          {isEditing ? 'Update' : 'Add'}
+          {isEditing ? 'Update' : 'Save'}
+        </Button>
+        <Button mode="regular" onPress={publishHandler}>
+          Publish
         </Button>
       </View>
       {isEditing && (
